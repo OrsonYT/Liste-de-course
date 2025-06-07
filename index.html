@@ -1,10 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Ma Liste de Courses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#171a23"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="appstore1024.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Ma Liste de Courses</title>
 </head>
 <body>
     <div id="nameModal" class="modal" style="display:flex;">
@@ -34,8 +41,15 @@
         <div id="itemsList"></div>
     </main>
     <footer>
-        <span>&copy; 2025 Ma Liste de Courses &bull; by Orson 🚀</span>
+        <span>&copy; 2025 Ma Liste de Courses • by Orson 🚀</span>
     </footer>
     <script src="main.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js').catch(err => console.error("SW fail:", err));
+            });
+        }
+    </script>
 </body>
 </html>
