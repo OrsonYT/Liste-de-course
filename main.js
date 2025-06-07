@@ -1,92 +1,58 @@
-let items = [];
-const itemsList = document.getElementById('itemsList');
-const form = document.getElementById('addItemForm');
-const input = document.getElementById('itemInput');
-const helloUser = document.getElementById('helloUser');
 
-// Gestion prénom utilisateur
-const nameModal = document.getElementById('nameModal');
-const userNameInput = document.getElementById('userNameInput');
-const saveNameBtn = document.getElementById('saveNameBtn');
-const appTitle = document.getElementById('appTitle');
+document.addEventListener('DOMContentLoaded', () => {
+    const nameModal = document.getElementById('nameModal');
+    const userNameInput = document.getElementById('userNameInput');
+    const saveNameBtn = document.getElementById('saveNameBtn');
+    const helloUser = document.getElementById('helloUser');
+    const addItemForm = document.getElementById('addItemForm');
+    const itemInput = document.getElementById('itemInput');
+    const itemsList = document.getElementById('itemsList');
 
-let userName = localStorage.getItem('userName') || '';
+    let items = JSON.parse(localStorage.getItem('items')) || [];
 
-function showNameModal() {
-    nameModal.style.display = "flex";
-    userNameInput.value = '';
-    userNameInput.focus();
-}
-function hideNameModal() {
-    nameModal.style.display = "none";
-}
-function setUserName(name) {
-    userName = name;
-    localStorage.setItem('userName', name);
-    helloUser.textContent = `Bonjour ${userName} 👋`;
-    appTitle.textContent = `${userName} - Liste de Courses`;
-}
-
-if (!userName) {
-    showNameModal();
-} else {
-    setUserName(userName);
-}
-
-saveNameBtn.onclick = () => {
-    const name = userNameInput.value.trim();
-    if (name) {
-        setUserName(name);
-        hideNameModal();
+    function renderItems() {
+        itemsList.innerHTML = '';
+        items.forEach((item, index) => {
+            const row = document.createElement('div');
+            row.className = 'site-row fade-in';
+            row.innerHTML = `
+                <span>${item}</span>
+                <button class="remove-btn" onclick="removeItem(${index})">X</button>
+            `;
+            itemsList.appendChild(row);
+        });
     }
-};
-userNameInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') saveNameBtn.click();
-});
 
-// Ajout d'un article
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const item = input.value.trim();
-    if (item && !items.includes(item)) {
-        items.push(item);
-        input.value = '';
-        renderItems(item, true);
-    }
-});
-
-// Supprimer un article avec animation
-function removeItem(item) {
-    const index = items.indexOf(item);
-    if (index > -1) {
+    window.removeItem = function(index) {
         items.splice(index, 1);
-        const row = document.getElementById(`row-${btoa(item)}`);
-        if (row) {
-            row.classList.add('fade-out');
-            setTimeout(() => {
-                row.remove();
-            }, 350);
-        }
-    }
-}
+        localStorage.setItem('items', JSON.stringify(items));
+        renderItems();
+    };
 
-// Affichage avec animation d'entrée
-function renderItems(newItem = null, animate = false) {
-    itemsList.innerHTML = '';
-    for (const item of items) {
-        const row = document.createElement('div');
-        row.className = 'site-row';
-        row.id = `row-${btoa(item)}`;
-        row.innerHTML = `
-            <span>${item}</span>
-            <button class="remove-btn" title="Supprimer" onclick="removeItem('${item}')">X</button>
-        `;
-        if (animate && item === newItem) {
-            row.classList.add('fade-in');
-            setTimeout(() => row.classList.remove('fade-in'), 350);
-        }
-        itemsList.appendChild(row);
+    const storedName = localStorage.getItem('userName');
+    if (storedName) {
+        nameModal.style.display = 'none';
+        helloUser.textContent = `Bonjour ${storedName} 👋`;
+        renderItems();
     }
-}
 
-window.removeItem = removeItem;
+    saveNameBtn.addEventListener('click', () => {
+        const name = userNameInput.value.trim();
+        if (name) {
+            localStorage.setItem('userName', name);
+            nameModal.style.display = 'none';
+            helloUser.textContent = `Bonjour ${name} 👋`;
+        }
+    });
+
+    addItemForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newItem = itemInput.value.trim();
+        if (newItem) {
+            items.push(newItem);
+            localStorage.setItem('items', JSON.stringify(items));
+            itemInput.value = '';
+            renderItems();
+        }
+    });
+});
