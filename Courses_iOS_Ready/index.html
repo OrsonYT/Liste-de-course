@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ma Liste de Courses</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="nameModal" class="modal" style="display:flex;">
+        <div class="modal-content">
+            <h2>Bienvenue !</h2>
+            <label for="userNameInput">Quel est ton prénom ?</label>
+            <input type="text" id="userNameInput" placeholder="Prénom" autocomplete="off" style="margin-top:1em;">
+            <button id="saveNameBtn" class="add-btn" style="margin-top:1.5em;">Valider</button>
+        </div>
+    </div>
+    <header>
+        <div class="brand">
+            <span class="logo"></span>
+            <span class="title" id="appTitle">Ma Liste de Courses</span>
+        </div>
+    </header>
+    <main>
+        <h2 id="helloUser" style="text-align:center;margin-bottom:1.2em;"></h2>
+        <form id="addItemForm">
+            <input type="text" id="itemInput" placeholder="Ajouter un article (ex : Tomates)" required autocomplete="off">
+            <button type="submit" class="add-btn" title="Ajouter">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </form>
+        <div id="itemsList"></div>
+    </main>
+    <footer>
+        <span>&copy; 2025 Ma Liste de Courses &bull; by Orson 🚀</span>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>
