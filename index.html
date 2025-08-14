@@ -14,7 +14,7 @@
     <title>Ma Liste de Courses</title>
 </head>
 <body>
-    <div id="nameModal" class="modal" style="display:flex;">
+    <div id="nameModal" class="modal open">
         <div class="modal-content">
             <h2>Bienvenue !</h2>
             <label for="userNameInput">Quel est ton prénom ?</label>
@@ -30,9 +30,10 @@
     </header>
     <main>
         <h2 id="helloUser" style="text-align:center;margin-bottom:1.2em;"></h2>
-        <form id="addItemForm" style="display:flex; flex-direction:column; gap:1em; align-items:center; max-width:100%;">
-            <input type="text" id="itemInput" style="width:100%; max-width:100%; padding:1em;" placeholder="Ajouter un article (ex : Tomates)" required autocomplete="off">
-            <button type="submit" class="add-btn" style="width:100%; max-width:100%; padding:1em;" title="Ajouter">
+        <form id="addItemForm" style="display:flex; flex-direction:column; gap:1em; align-items:center; max-width:100%;" aria-label="Ajouter un article">
+            <label for="itemInput" class="sr-only">Nom de l'article</label>
+            <input type="text" id="itemInput" aria-labelledby="itemInput" style="width:100%; max-width:100%; padding:1em;" placeholder="Ajouter un article (ex : Tomates)" required autocomplete="off">
+            <button type="submit" class="add-btn" style="width:100%; max-width:100%; padding:1em;" title="Ajouter" aria-label="Ajouter l'article">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                     <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
@@ -40,10 +41,89 @@
         </form>
         <div id="itemsList"></div>
     </main>
+    <!-- Bottom liquid-glass navigation bar -->
+    <div class="bottom-bar">
+        <nav class="glass-bar" role="navigation" aria-label="Navigation principale">
+            <button class="glass-circle" id="quickAddBtn" title="Ajout rapide" aria-label="Ajout rapide">+</button>
+            <div class="glass-pill">
+                <div class="pill-icons">
+                    <button id="favBtn" class="pill-icon" title="Favoris">❤</button>
+                    <button id="priceBtn" class="pill-icon" title="Dépenses">🧾</button>
+                    <button id="settingsBtn" class="pill-icon" title="Options">⚙️</button>
+                </div>
+            </div>
+            <button class="glass-circle" id="voiceAddBtn" title="Ajout vocal" aria-label="Ajout vocal">🎤</button>
+        </nav>
+    </div>
+
+    <!-- Quick add modal -->
+    <div id="quickAddModal" class="modal quick-add">
+        <div class="modal-content">
+            <button class="close-btn" id="closeQuickAdd">×</button>
+            <h3>Ajout rapide</h3>
+            <div class="quick-field" style="margin-top:0.8em;">
+                <div class="quick-icon" aria-hidden="true">✚</div>
+                <input id="quickAddInput" type="text" placeholder="Tomates, Lait..." aria-label="Ajout rapide" />
+                <button id="quickAddConfirm" class="add-btn quick">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Favorites modal -->
+    <div id="favoritesModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeFavorites">×</button>
+            <h3>Favoris</h3>
+            <div id="favoritesList" style="margin-top:0.8em; display:flex; flex-direction:column; gap:0.6em;"></div>
+        </div>
+    </div>
+
+    <!-- Settings modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeSettings">×</button>
+            <h3>Paramètres</h3>
+            <div style="margin-top:0.8em; display:flex; flex-direction:column; gap:0.8em;">
+                <button id="clearListBtn" class="add-btn" style="background:#e74c3c;">Vider la liste</button>
+                <button id="exportBtn" class="add-btn" style="background:#2a7fff;">Exporter la liste</button>
+                <div style="color:#cbd8ee; font-size:0.95em;">Actions rapides pour gérer vos articles.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Price / dépenses modal -->
+    <div id="priceModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" id="closePrice">×</button>
+            <h3>Dépenses - Dernière course</h3>
+            <label for="priceInput">Montant (€)</label>
+            <div class="price-field">
+                <div class="symbol">€</div>
+                <input id="priceInput" type="number" step="0.01" placeholder="Ex: 23.50">
+                <button id="savePriceBtn" class="save-inline">Enregistrer</button>
+            </div>
+            <canvas id="priceChart" width="720" height="200" style="width:100%; max-width:100%; margin-top:1em; background:transparent; border-radius:8px;"></canvas>
+            <div id="priceList" style="margin-top:0.9em; display:flex; flex-direction:column; gap:0.5em;"></div>
+        </div>
+    </div>
     <footer>
-        <span>&copy; 2025 Ma Liste de Courses • by Orson 🚀</span>
     </footer>
     <script src="main.js"></script>
+    <script>
+        // mark active link in bottom glass nav
+        (function(){
+            const links = document.querySelectorAll('.glass-bar .glass-btn');
+            const path = location.pathname.split('/').pop() || 'index.html';
+            links.forEach(a => {
+                const href = a.getAttribute('href') || '';
+                if (href === path || (href === 'index.html' && path === '')) {
+                    a.classList.add('active');
+                } else {
+                    a.classList.remove('active');
+                }
+            });
+        })();
+    </script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
